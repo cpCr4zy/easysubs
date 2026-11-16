@@ -113,4 +113,18 @@ describe("Coursera", () => {
     expect(coursera.getSubsContainer().dataset.testid).toBe("playerContainer");
     expect(coursera.getSettingsContentContainer().dataset.testid).toBe("playerContainer");
   });
+
+  it("mounts the button in the control bar's row, beside the wrappers of the settings button", () => {
+    document.body.innerHTML = `
+      <div data-testid="playerContainer">
+        <div data-testid="video-control-bar" style="display: flex">
+          <button aria-label="Speed"></button>
+          <div id="item"><span style="display: flex; flex-direction: column">
+            <button aria-label="Settings" data-testid="videoSettingsMenuButton"></button>
+          </span></div>
+        </div>
+      </div>`;
+
+    expect(new Coursera().getSettingsButtonContainer().id).toBe("item");
+  });
 });

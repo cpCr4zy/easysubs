@@ -80,10 +80,16 @@ class Coursera implements Service {
     }));
   }
 
+  // EasySubs' button goes before this element. The settings button sits in wrappers of its own (its menu's anchor),
+  // where EasySubs' button would stack above it: the outermost one that's an item of the control bar's row
   public getSettingsButtonContainer() {
-    const selector = document.querySelector(`${PLAYER} ${SETTINGS_BUTTON}`);
-    if (selector === null) throw new Error("Settings button container not found");
-    return selector as HTMLElement;
+    const button = document.querySelector<HTMLElement>(`${PLAYER} ${SETTINGS_BUTTON}`);
+    if (button === null) throw new Error("Settings button container not found");
+    for (let element = button; element.parentElement; element = element.parentElement) {
+      if (element.parentElement.matches(PLAYER)) break;
+      if (isRow(element.parentElement)) return element;
+    }
+    return button;
   }
 
   public getSettingsContentContainer() {
@@ -104,6 +110,11 @@ class Coursera implements Service {
     if (selector === null) throw new Error("Coursera player not found");
     return selector as HTMLElement;
   }
+}
+
+function isRow(element: HTMLElement) {
+  const style = getComputedStyle(element);
+  return style.display.endsWith("flex") && !style.flexDirection.startsWith("column");
 }
 
 // The language of the captions turned on in the player, "" when they're off
